@@ -8,13 +8,13 @@ export const FormWrapper = styled.div`
   align-items: center;
   justify-content: center;
   width:100%;
-  height: 80vh;
+  height: 90vh;
   padding: 30px;
   box-sizing: border-box;
    max-width: 450px;
   margin: 0 auto; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 1.9);
-  margin-top: -10px;
+  margin-top: -20px;
   
 
   h2 {
@@ -27,7 +27,7 @@ export const FormWrapper = styled.div`
     width: 90%;
     max-width: 400px; 
     margin-right:20px;
-    margin-top: 30px;
+    margin-top: 10px;
   }
 
   @media (max-width: 768px) {

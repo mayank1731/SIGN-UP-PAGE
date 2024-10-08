@@ -1,98 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { FormWrapper, Input, Button, PhoneNumberWrapper, OtpInputWrapper, CheckboxWrapper } from '../styles/LoginSignupStyles';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FormWrapper, Input, Button, CheckboxWrapper } from '../styles/LoginSignupStyles';
 // import Header from '../components/Header';
 
 const Signup = ({ setIsSignedUp }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
-  const [timer, setTimer] = useState(0);
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState(''); // State for confirm password
+  const [termsAccepted, setTermsAccepted] = useState(false); // Terms acceptance flag
+  const [captchaVerified, setCaptchaVerified] = useState(false); // CAPTCHA verified flag
   const navigate = useNavigate();
 
   // Handle form submission (Signup)
   const handleSignup = (e) => {
     e.preventDefault();
 
-    // Validation checks
-    if (!username) {
-      alert('Username is required');
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
-      alert('Please enter a valid email address');
-      return;
-    }
-
-    if (!password) {
-      alert('Password is required');
-      return;
-    }
-
-    if (!phone || !validatePhoneNumber(phone)) {
-      alert('Please enter a valid phone number');
-      return;
-    }
-
-    if (!otpSent || !otp) {
-      alert('Please enter the OTP that was sent to your phone');
-      return;
-    }
-
     if (!termsAccepted) {
-      alert('Please read and accept the terms and conditions');
+      alert('Please read all terms and conditions'); // Alert if terms not accepted
       return;
     }
 
     if (!captchaVerified) {
-      alert('Please complete the CAPTCHA verification');
+      alert('Please complete the CAPTCHA verification'); // Alert if CAPTCHA not verified
       return;
     }
 
-    // If all validations pass
+    // Check if all fields are filled
+    if (!username || !email || !password) {
+      alert('Please fill all fields'); // Alert if any field is empty
+      return;
+    }
+
+    // Check if password and confirm password match
+    if (password !== confirmPassword) {
+      alert("Passwords don't match"); // Show popup if passwords don't match
+      return;
+    }
+
+    // Mock signup, set is signed up to true
     setIsSignedUp(true);
     navigate('/login'); // Redirect to login after signup
   };
 
-  // Validate phone number (Indian phone number validation as an example)
-  const validatePhoneNumber = (phone) => {
-    const phoneRegex = /^[6-9]\d{9}$/;
-    return phoneRegex.test(phone);
-  };
-
+  // Commented out OTP functionality
+  /*
   // Handle OTP request
   const requestOtp = () => {
     if (validatePhoneNumber(phone)) {
-      setOtpSent(true);
+      setOtpSent(true); // OTP is sent, show the OTP input field
       setTimer(30); // Start a 30-second timer
     } else {
       alert('Please enter a valid phone number');
     }
   };
 
-  // Handle OTP timer
-  useEffect(() => {
-    let interval;
-    if (timer > 0) {
-      interval = setInterval(() => {
-        setTimer((prevTimer) => prevTimer - 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [timer]);
+  // Validate phone number (Indian phone number validation as an example)
+  const validatePhoneNumber = (phone) => {
+    const phoneRegex = /^[6-9]\d{9}$/; // Basic validation for 10 digits starting with 6-9
+    return phoneRegex.test(phone);
+  };
 
   // Handle resend OTP
   const resendOtp = () => {
     setOtp(''); // Clear previous OTP
     setTimer(30); // Reset timer
   };
+  */
 
   // Handle CAPTCHA checkbox toggle
   const handleCaptcha = () => {
@@ -101,7 +75,6 @@ const Signup = ({ setIsSignedUp }) => {
 
   return (
     <>
-      {/* <Header /> */}
       <FormWrapper>
         <h2>Signup</h2>
         <form onSubmit={handleSignup}>
@@ -123,8 +96,16 @@ const Signup = ({ setIsSignedUp }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {/* Confirm Password field */}
+          <Input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
 
-          {/* Phone number with OTP button */}
+          {/* Commented out phone number and OTP section */}
+          {/*
           <PhoneNumberWrapper>
             <Input
               type="tel"
@@ -137,11 +118,10 @@ const Signup = ({ setIsSignedUp }) => {
             </Button>
           </PhoneNumberWrapper>
 
-          {/* Show OTP field only after sending OTP */}
           {otpSent && (
             <OtpInputWrapper>
               <Input
-                type="text"
+                type="password"  // Hides OTP input like a password
                 placeholder="Enter OTP"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
@@ -155,6 +135,7 @@ const Signup = ({ setIsSignedUp }) => {
               )}
             </OtpInputWrapper>
           )}
+          */}
 
           {/* Terms and Conditions Checkbox */}
           <CheckboxWrapper>
@@ -163,7 +144,7 @@ const Signup = ({ setIsSignedUp }) => {
               checked={termsAccepted}
               onChange={() => setTermsAccepted(!termsAccepted)}
             />
-            {termsAccepted && <span>✔️</span>}
+            {termsAccepted && <span>✔️</span>} {/* Show checkmark if accepted */}
             <label style={{ marginLeft: '5px' }}>
               I agree with <a href="/terms" target="_blank" rel="noopener noreferrer">terms and conditions</a>
             </label>
@@ -176,17 +157,15 @@ const Signup = ({ setIsSignedUp }) => {
               checked={captchaVerified}
               onChange={handleCaptcha}
             />
-            {captchaVerified && <span>✔️</span>}
+            {captchaVerified && <span>✔️</span>} {/* Show checkmark when verified */}
             <label style={{ marginLeft: '5px' }}>I'm not a robot (CAPTCHA)</label>
           </CheckboxWrapper>
 
           <Button type="submit" disabled={!termsAccepted || !captchaVerified}>Signup</Button>
-        </form>
 
-        {/* Sign in Link */}
-        <p style={{ marginTop: '15px' }}>
-          Already have an account? <Link to="/login">Sign in here</Link>
-        </p>
+          {/* Link to Signin page */}
+          <p>Already have an account? <a href="/login">Sign in</a></p>
+        </form>
       </FormWrapper>
     </>
   );
